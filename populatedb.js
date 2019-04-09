@@ -61,7 +61,7 @@ function startupCreate(title, summary, founders, industry, cb) {
   startupdetail = { 
     title: title,
     summary: summary,
-    founder: [founders],
+    founder: founders,
   }
   if (industry != false) startupdetail.industry = industry
     

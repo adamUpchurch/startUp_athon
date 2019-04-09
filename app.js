@@ -6,7 +6,8 @@ var logger          = require('morgan');
 
 var indexRouter     = require('./routes/index');
 var usersRouter     = require('./routes/users');
-var {MongoDB}       = require('../config/keys');
+var startupRouter   = require('./routes/catalog')
+var {MongoDB}       = require('./config/keys');
 
 
 var app = express();
@@ -14,9 +15,9 @@ var app = express();
 //Set up mongoose connection
 var mongoose = require('mongoose')
 var mongoDB = MongoDB.dbURI
-mongoose.connect(mongodDB, {useNewURLParser: true});
+mongoose.connect(mongoDB, {useNewURLParser: true});
 var db = mongoose.connection;
-db.on('error', console.lerror.bind(console, 'MongoDB connection error: '));
+db.on('error', console.error.bind(console, 'MongoDB connection error: '));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -30,6 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/startup', startupRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

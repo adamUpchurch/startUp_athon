@@ -4,7 +4,7 @@ var Schema = mongoose.Schema
 
 var StartupShema = new Schema({
     title: {type: String, required: true},
-    founder: [{type: Schema.Types.ObjectId, ref: 'Author', required: true}],
+    founder: [{type: Schema.Types.ObjectId, ref: 'Author', required: true},],
     summary: {type: String, required: true},
     industry: [{type: Schema.Types.ObjectId, ref: "Industry"}],
     status: {type: String, required: true, enum:['Ideation', 'Validation', 'Pre-seed', 'Seed', 'Series A', 'Series B', 'Series C+', 'IPO'], default: 'Ideation'},
