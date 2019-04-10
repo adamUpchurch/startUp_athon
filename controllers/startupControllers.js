@@ -1,11 +1,29 @@
-var Startup = require('../models/founder')
+var async = require('async');
+
+var Founder = require('../models/founder'),
+    Startup = require('../models/startup'),
+    Industry = require('../models/industry');    
 
 module.exports = {
-    index: (req, res) =>{
-        res.send('NOT IMPLEMENTED: Startup Home Page')
+    index: (req, res) => {
+        async.parallel({
+            founder_count: function(cb) {
+                Founder.countDocuments({}, cb)
+            },
+            startup_count: function(cb) {
+                Startup.countDocuments({}, cb)
+            },
+            industry_count: function(cb) {
+                Industry.countDocuments({}, cb)
+            },
+        }, function(err, results) {
+            res.render('index', { title: 'startUp_athon', error: err, data: results });
+
+        } 
+        )
     },
     list: (req, res) => {
-        res.send("NOT IMPLEMENTED: Startup list")
+        Startup.countDocuments({}, callback)
     },
     detail: (req, res) => {
         res.send("NOT IMPLEMENTED: Startup Detail: " + req.params.id)

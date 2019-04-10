@@ -1,4 +1,4 @@
-var Founder = require('../models/founder')
+var Industry = require('../models/industry')
 
 module.exports = {
     list: (req, res) => {

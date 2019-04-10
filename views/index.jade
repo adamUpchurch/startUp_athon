@@ -2,4 +2,16 @@ extends layout
 
 block content
   h1= title
-  p Welcome to the #{title} dome!
+  p Welcome to Atlanta's Startup Sprint Team!
+
+  h1 Dynamic Content
+
+  if error
+    p Error getting startup information
+  else
+    p The startUp_athon has the following record counts;
+
+    ul
+      li #[strong Founders:] !{data.founder_count}
+      li #[strong Startups:] !{data.startup_count}
+      li #[strong Industries:] !{data.industry_count}
