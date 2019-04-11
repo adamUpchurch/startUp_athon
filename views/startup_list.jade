@@ -1,0 +1,12 @@
+extends layout
+
+block content
+    h1= title
+
+    ul
+        each startup in startup_list
+            li
+                a(href=startup.url) #{startup.title}
+                |   - (populate founders here)
+        else
+            li There are no startups.

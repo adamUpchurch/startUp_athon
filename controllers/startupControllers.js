@@ -22,8 +22,13 @@ module.exports = {
         } 
         )
     },
-    list: (req, res) => {
-        Startup.countDocuments({}, callback)
+    list: (req, res, next) => {
+        Startup.find({}, 'title founder')
+            .populate('founder')
+            .exec((err, list_startups) => {
+                if (err) { return next(err); }
+                res.render('startup_list', { title: 'Startup List', startup_list: list_startups})
+            });
     },
     detail: (req, res) => {
         res.send("NOT IMPLEMENTED: Startup Detail: " + req.params.id)
