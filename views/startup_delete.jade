@@ -1,0 +1,21 @@
+extends layout
+
+block content
+    h1 #{startup.title}
+
+    div(style='margin-left: 20px; margin-top:20px')
+
+    h4 Exective Summary - Elevator Pitch. 1-2 Sentences.
+    h6 website url or github link
+    p Industry: #{startup.industry.name}
+    ul
+        each founder in startup.founder
+            li=founder.name
+        else
+            p no founders
+    p Do you really want to delete this startup?
+
+    form(method='POST' action='')
+        .form-group
+            input#startupid.form-control(type='hidden', name='startupid', required='true', value=startup._id)
+        button.btn.btn-primary(type='submit') Delete

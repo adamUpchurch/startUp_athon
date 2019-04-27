@@ -87,7 +87,17 @@ module.exports = {
         })
     },
     delete_post: (req, res) => {
-        res.send("NOT IMPLEMENTED: Industry Delete Post")
+        async.parallel({
+            Industry: callback => {
+                Industry.findById(req.body.industryid).exec(callback)
+            }
+        },(error, results) => {
+            if(error) return next(error);
+            Industry.findByIdAndRemove(req.body.industryid, function deleteIndustry(error) {
+                if(error) return next(error)
+                res.redirect('/catalog/industries')
+            })
+        })
     },
     update_get: (req, res) => {
         res.send("NOT IMPLEMENTED: Industry Update Get")

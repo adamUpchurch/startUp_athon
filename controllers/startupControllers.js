@@ -99,10 +99,29 @@ module.exports = {
         
     },
     delete_get: (req, res) => {
-        res.send("NOT IMPLEMENTED: Startup Delete Get")
+        async.parallel({
+            startup: callback => {
+                Startup.findById(req.params.id).populate('founder industry').exec(callback)
+            },
+        }, (error, results) => {
+            if(error) return next(error);
+            console.log(results)
+            if(results.startup == null) res.redirect('/catalog/startups')
+            res.render('startup_delete', {title: 'Delete Startup', startup: results.startup})
+        })
     },
     delete_post: (req, res) => {
-        res.send("NOT IMPLEMENTED: Startup Delete Post")
+        async.parallel({
+            startup: callback => {
+                Startup.findById(req.body.startupid).exec(callback)
+            }
+        }, (error, results) => {
+            if(error) return next(error)
+            Startup.findByIdAndRemove(req.body.startupid, function deleteStartup(error) {
+                if(error) return next(error)
+                res.redirect('/catalog/startups')
+            })
+        })
     },
     update_get: (req, res) => {
         async.parallel({

@@ -6,7 +6,7 @@ block content
     p Startups:
     ul
         each startup in industry_startups.length ? industry_startups : ['There are no startups']
-            li=startup.title
+            li=startup
     p Do you really want to delete this industry?
 
     form(method="POST" action='')

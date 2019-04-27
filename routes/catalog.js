@@ -12,7 +12,7 @@ router.get('/startup/create', startup.create_get)
 router.post('/startup/create', startup.create_post)
 
 router.get('/startup/:id/delete', startup.delete_get)
-router.get('/startup/:id/delete', startup.delete_post)
+router.post('/startup/:id/delete', startup.delete_post)
 
 router.get('/startup/:id/update', startup.update_get)
 router.post('/startup/:id/update', startup.update_post)
@@ -38,7 +38,7 @@ router.get('/industry/create', industry.create_get)
 router.post('/industry/create', industry.create_post)
 
 router.get('/industry/:id/delete', industry.delete_get)
-router.get('/industry/:id/delete', industry.delete_post)
+router.post('/industry/:id/delete', industry.delete_post)
 
 router.get('/industry/:id/update', industry.update_get)
 router.get('/industry/:id/update', industry.update_post)
