@@ -1,0 +1,18 @@
+extends layout
+
+block content
+    h1 Founder: #{founder.name}
+    h6=founder.personality
+
+    p Co-founded:
+    ul
+        for startup in startups
+            li=startup.title
+    //- if startups.length 
+    //-     p #[strong remove the founder from the startups before attempting to delete founder]
+    p Do you really want to delete this author?
+
+    form(method='POST' action='')
+        .form-group
+            input#founderid.form-control(type='hidden', name='founderid', required='true', value=founder._id)
+        button.btn.btn-primary(type='submit') Delete

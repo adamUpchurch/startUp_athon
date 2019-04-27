@@ -1,0 +1,12 @@
+extends layout
+
+block content
+    h1= title
+
+    ul
+        each industry in industry_list
+            li
+                a(href=industry.url) #{industry.name}
+                |   - number of projects, examples ... ?
+        else
+            li There are no industries.

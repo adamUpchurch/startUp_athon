@@ -1,0 +1,37 @@
+extends layout
+
+block content
+    h1=title
+    form(method='POST' action='')
+        .form-group
+            label(for='title') Startup:
+            input#title.form-control(type='text', placeholder='Name of Startup', name='title' required='true' value=(startup===undefined ? '': startup.title))
+        .form-group
+            label(for='founder') Founders:
+            div
+                for founder in founders
+                    div(style='display: inline; padding-right: 10px;')
+                        input.checkbox-input(type='checkbox', name='founder', id=founder._id, value=founder._id, checked=founder.checked)
+                        label(for=founder._id) #{founder.name}
+        .form-group
+            label(for='industry') Industry:
+            select#founder.form-control(type='select', placeholder='Select Industry' name='industry' required='true')
+                for industry in industries
+                    if startup
+                        option(value=industry._id selected=(industry._id.toString() == startup.industry ? 'selected' : false)) #{industry.name}
+                    else
+                        option(value=industry._id) #{industry.name}
+        .form-group
+            label(for='status') Status:
+            select#status.form-control(type='select', placeholder='Select Status' name='status' required='true')
+                for status in ['Ideation', 'Validation', 'Pre-seed', 'Seed', 'Series A', 'Series B', 'Series C+', 'IPO']
+                    if startup
+                        option(value=status selected=(startup.status.toString()==status ? 'selected' : false)) #{status}
+                    else
+                        option(value=status) #{status}
+        button.btn.btn-primary(type='submit') Submit
+
+        if errors
+            ul
+                for error in errors
+                    li!= error.msg

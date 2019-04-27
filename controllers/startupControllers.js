@@ -4,6 +4,9 @@ var Founder = require('../models/founder'),
     Startup = require('../models/startup'),
     Industry = require('../models/industry');    
 
+const { body,validationResult } = require('express-validator/check');
+const { sanitizeBody } = require('express-validator/filter');
+
 module.exports = {
     index: (req, res) => {
         async.parallel({
@@ -31,13 +34,69 @@ module.exports = {
             });
     },
     detail: (req, res) => {
-        res.send("NOT IMPLEMENTED: Startup Detail: " + req.params.id)
+        let id = req.params.id;
+        async.parallel({
+            startup: function(){
+                Startup.findById(id)
+                    .populate('founder')
+                    .populate('industry')
+                    .exec((err, startup)=> {
+                        if (err) { return next(err); }
+                        res.render('startup_detail', { title: 'Startup Detail', startup: startup})
+                    })
+
+            }
+        })
     },
-    create_get: (req, res) => {
-        res.send("NOT IMPLEMENTED: Startup Create Get")
+    create_get: (req, res, next) => {
+        
+        async.parallel({
+            founders: function(callback){
+                Founder.find(callback);
+            },
+            industries: function(callback){
+                Industry.find(callback)
+            },
+        },  function(error, results){
+                if(error) {return next(error)}
+                res.render('startup_form', {title: 'Startup Form', founders:results.founders, industries: results.industries})
+            }
+            )
     },
     create_post: (req, res) => {
-        res.send("NOT IMPLEMENTED: Startup Create Post")
+        (req, res, next) => {
+            console.log(req.body)
+            if(!(req.body.founder instanceof Array)){
+                if(typeof req.body.founder==='undefined')
+                    req.body.founder=[];
+                else
+                    req.body.founder = new Array(req.body.founder);
+            }
+            next();
+        },
+        // Validate fields
+        body('title', 'Title must not be empty').isLength({min: 1}).trim(),
+        body('summary', 'Summary must not be empty').isLength({min: 1}).trim(),
+
+        //Sanitize
+        sanitizeBody('title').escape(),
+        sanitizeBody('founder.*').escape(),
+        sanitizeBody('summary').escape(),
+        sanitizeBody('industry').escape(),
+        (req, res, next) => {
+            const errors = validationResult(req);
+
+            // Create a Startup Project
+            //Create a Startup object with escaped/trimmed data and old id
+            var startup = new Startup({
+                title: req.body.title,
+                summary: req.body.summary,
+                industry: req.body.industry,
+                status: req.body.status,
+                founder: req.body.founder,
+            });
+        }
+        
     },
     delete_get: (req, res) => {
         res.send("NOT IMPLEMENTED: Startup Delete Get")
@@ -46,9 +105,105 @@ module.exports = {
         res.send("NOT IMPLEMENTED: Startup Delete Post")
     },
     update_get: (req, res) => {
-        res.send("NOT IMPLEMENTED: Startup Update Get")
+        async.parallel({
+            founder: function(callback){
+                Founder.find(callback)
+            },
+            industry: function(callback){
+                Industry.find(callback)
+            },
+            startup: function(callback){
+                Startup.findById(req.params.id).populate('founder').populate('industries').exec(callback)
+            },
+        },
+            function(error, results){
+                if(error) { return next(error)}
+                if (results.startup == null) { // No startup to return
+                    var err = new Error('Startup not found')
+                    err.status = 404;
+                    return next(err)
+                }
+                //Success
+                // Mark our selected industries as checked.
+                for (var all_founder_inter = 0; all_founder_inter < results.founder.length; all_founder_inter++){
+
+                    for (var startup_founder_inter = 0; startup_founder_inter < results.startup.founder.length; startup_founder_inter++){
+                    
+                        if(results.founder[all_founder_inter]._id.toString()==results.startup.founder[startup_founder_inter]._id.toString()) {
+                            results.founder[all_founder_inter].checked='true'
+                        }
+                    }
+                }
+                // res.json(results)
+                res.render('startup_form', {title: 'Update Startup', founders: results.founder, industries: results.industry, startup: results.startup})
+            })
     },
-    update_post: (req, res) => {
-        res.send("NOT IMPLEMENTED: Startup Update Post")
-    },
+    update_post: [
+        (req, res, next) => {
+            console.log(req.body)
+            if(!(req.body.founder instanceof Array)){
+                if(typeof req.body.founder==='undefined')
+                    req.body.founder=[];
+                else
+                    req.body.founder = new Array(req.body.founder);
+            }
+            next();
+        },
+        // Validate fields
+        body('title', 'Title must not be empty').isLength({min: 1}).trim(),
+        body('summary', 'Summary must not be empty').isLength({min: 1}).trim(),
+
+        //Sanitize
+        sanitizeBody('title').escape(),
+        sanitizeBody('founder.*').escape(),
+        sanitizeBody('summary').escape(),
+        sanitizeBody('industry').escape(),
+
+        // Process request after validation and sanitization
+        (req, res, next) => {
+            const errors = validationResult(req);
+
+            //Create a Startup object with escaped/trimmed data and old id
+            var startup = new Startup({
+                title: req.body.title,
+                summary: req.body.summary,
+                industry: req.body.industry,
+                status: req.body.status,
+                founder: req.body.founder,
+                _id: req.params.id //This is required, or a new ID will be assigned.
+            });
+        if (!errors.isEmpty()) {
+            // There are errors. Render form again with sanitized value/error messages
+
+            // Get all Founders and Industries for form
+            async.parallel({
+                founders: function(callback) {
+                    Founder.find(callback)
+                },
+                industry: function(callback) {
+                    Industry.find(callback)
+                },
+            }, function(error, results) {
+                if (error) {return next(error)}
+                
+                // Mark selected our founders as checked
+                for (let i = 0; i < results.founders.length; i++) {
+                    if (startup.founder.indexOf(results.founders[i]._id) > -1) {
+                        results.founders[i].checked='true';
+                    }
+                }
+                res.render('startup_form', {title: 'Update Startup', founders: results.founders, industry: results.industry, startup: startup, errors: errors.array() });
+            });
+            return;
+        }
+        else {
+            // Data from form is valid. Update the record
+            Startup.findByIdAndUpdate(startup._id, startup, {}, function(error, thestartup) {
+                if(error) {return next(error)}
+                // Update successful - redirect to startup detail
+                res.redirect(thestartup.url)
+            })
+        }
+        }
+    ]
 }

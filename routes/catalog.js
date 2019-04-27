@@ -15,7 +15,7 @@ router.get('/startup/:id/delete', startup.delete_get)
 router.get('/startup/:id/delete', startup.delete_post)
 
 router.get('/startup/:id/update', startup.update_get)
-router.get('/startup/:id/update', startup.update_post)
+router.post('/startup/:id/update', startup.update_post)
 
 router.get('/startup/:id', startup.detail)
 router.get('/startups', startup.list)
@@ -25,10 +25,10 @@ router.get('/founder/create', founder.create_get)
 router.post('/founder/create', founder.create_post)
 
 router.get('/founder/:id/delete', founder.delete_get)
-router.get('/founder/:id/delete', founder.delete_post)
+router.post('/founder/:id/delete', founder.delete_post)
 
 router.get('/founder/:id/update', founder.update_get)
-router.get('/founder/:id/update', founder.update_post)
+router.post('/founder/:id/update', founder.update_post)
 
 router.get('/founder/:id', founder.detail)
 router.get('/founders', founder.list)
@@ -44,6 +44,6 @@ router.get('/industry/:id/update', industry.update_get)
 router.get('/industry/:id/update', industry.update_post)
 
 router.get('/industry/:id', industry.detail)
-router.get('/industrys', industry.list)
+router.get('/industries', industry.list)
 
 module.exports = router;

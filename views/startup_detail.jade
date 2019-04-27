@@ -1,0 +1,34 @@
+extends layout
+
+block content
+
+    h1 Startup: #{startup.title}
+    if startup.status === 'Ideation'
+        h7.text-ideation #{startup.status}
+    else if startup.status === 'Validation'
+        h7.text-validation #{startup.status}
+    else if startup.status === 'Pre-seed'
+        h7.text-preseed #{startup.status}
+    else if startup.status === 'IPO'
+        h7.text-ipo #{startup.status}
+    else
+        h7.text-funded #{startup.status}
+
+    div(style='margin-left: 20px; margin-top:20px')
+
+    h4 Exective Summary - Elevator Pitch. 1-2 Sentences.
+    h6 website url or github link
+    ul
+        each founder in startup.founder
+            li
+                a(href=founder.url) #{founder.name}
+        else
+            p no founders
+
+    Summary of the start up. random shit. plan maybe. Idk. Stuffffff.
+    hr
+    p
+        a(href=startup.url+'/delete') Delete Startup
+    p
+        a(href=startup.url+'/update') Update Startup
+    

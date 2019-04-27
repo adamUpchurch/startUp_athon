@@ -9,8 +9,8 @@ var IndustrySchema = new Schema ({
 // Virtual for industry's URL
 IndustrySchema
     .virtual('url')
-    .get(() => {
-        return '/catalog/founder/' +this._id
+    .get(function() {
+        return '/catalog/industry/' +this._id
     })
 
 module.exports = mongoose.model('Industry', IndustrySchema)

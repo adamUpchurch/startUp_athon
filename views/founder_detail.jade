@@ -1,0 +1,29 @@
+extends layout
+
+block content
+
+    h1 #{founder.name}
+
+    div(style='margin-left: 20px; margin-top:20px')
+
+    if founder.personality
+        h5 #{founder.personality}
+    else
+        h5 to be personality
+    if founder.linkedin_url
+        h6 #{founder.linkedin_url}
+    else
+        h6 to be linkedin url
+    p Goals - Summary - Interests
+    h4 Startups Contributed to:
+    ul
+        each startup in startups
+            li
+                a(href=startup.url) #{startup.title}
+        else
+            p no startups, yet!
+
+    hr
+    p
+    a(href=founder.url+'/delete') Delete Founder
+    

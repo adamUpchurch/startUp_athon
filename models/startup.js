@@ -14,13 +14,13 @@ var StartupSchema = new Schema({
 // Virtual 
 StartupSchema
     .virtual('url')
-    .get( _ => {
-        return '/catalog/startups' + this._id
+    .get(function() {
+        return '/catalog/startup/' + this._id
     })
 
 StartupSchema
     .virtual('isFunded')
-    .get( _ => {
+    .get(function(){
         return (this.status != 'Ideation' || this.status != 'Validation') 
     })
 
