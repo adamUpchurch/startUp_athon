@@ -5,10 +5,14 @@ block content
 
     form(method='POST' action='')
         .form-group
-            label(for='name') Founder:
-            input#name.form-control(type='text', name='first_name', placeholder='first_name', value=(undefined===founder ? '': founder.first_name), required='true')
-            input#name.form-control(type='text', name='family_name',placeholder='family_name', value=(undefined===founder ? '': founder.family_name), required='true')
-        .form-group
+            label(for='name') First Name:
+            input#name.form-control(type='text', name='first_name', placeholder='first name', value=(undefined===founder ? '': founder.first_name), required='true')
+            label(for='name') Family Name:
+            input#name.form-control(type='text', name='family_name',placeholder='family name', value=(undefined===founder ? '': founder.family_name), required='true')
+            label(for='name') LinkedIn:
+            input#name.form-control(type='text', name='linkedin_url',placeholder='LinkedIN', value=(undefined===founder ? '': founder.linkedin_url))
+            label(for='name') Portfolio:
+            input#name.form-control(type='text', name='portfolio_url',placeholder='portfolio url', value=(undefined===founder ? '': founder.portfolio_url))
             label(for='personality') Personality:
             select#status.form-control(type='select',placeholder='Select Personality' name='personality' required='true')
                 for personality in ['INTJ', 'INTP', 'ENTJ', 'ENTP','INFJ', 'INFP', 'ENFJ', 'ENFP', 'ISTF', 'ISFJ', 'ESTJ', 'ESFJ', 'ISTP', 'ISFP', 'ESTP', 'ESFP']

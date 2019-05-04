@@ -1,5 +1,8 @@
 extends layout
 
+block scripts
+    script(src="https://cdn.jsdelivr.net/npm/marked/marked.min.js")
+
 block content
 
     h1 Startup: #{startup.title}
@@ -26,9 +29,22 @@ block content
             p no founders
 
     Summary of the start up. random shit. plan maybe. Idk. Stuffffff.
+
+    if startup.businessplan
+        hr
+        div(id="businessplan")
+
+
+    else 
+        p No business plan
     hr
     p
-        a(href=startup.url+'/delete') Delete Startup
+        a(href=startup.url+'/delete') Delete
     p
-        a(href=startup.url+'/update') Update Startup
-    
+        a(href=startup.url+'/update') Update
+
+    script(type="text/javascript").
+        console.log('========================')
+        console.log(startup.businessplan)
+        document.getElementById('businessplan').innerHTML =
+            marked('##Hello world!');

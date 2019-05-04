@@ -6,6 +6,7 @@ var StartupSchema = new Schema({
     title: {type: String, required: true},
     founder: [{type: Schema.Types.ObjectId, ref: 'Founder', required: true},],
     summary: {type: String, required: true},
+    businessplan: {type: String, required: true},
     industry: [{type: Schema.Types.ObjectId, ref: "Industry"}],
     status: {type: String, required: true, enum:['Ideation', 'Validation', 'Pre-seed', 'Seed', 'Series A', 'Series B', 'Series C+', 'IPO'], default: 'Ideation'},
     web_url: {type: String}

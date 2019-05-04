@@ -54,7 +54,9 @@ module.exports = {
 
             // Create a industry object with escaped & trimmed data
             var industry = new Industry(
-                {name: req.body.name}
+                {
+                name: req.body.name,
+                }
             );
 
             if(!errors.isEmpty()) {
@@ -100,9 +102,48 @@ module.exports = {
         })
     },
     update_get: (req, res) => {
-        res.send("NOT IMPLEMENTED: Industry Update Get")
+        async.parallel({
+            indsutry: callback => {
+                Industry.findById(req.params.id).exec(callback)
+            },
+            startups: callback => {
+                Startup.find({'industry': req.params.id}).exec(callback)
+            }
+        }, (error, results) => {
+            if(error) return next(error)
+            if(results.indsutry == null) res.redirect('/catalog/industry')
+            res.render('industry_form', {title: 'Update Industry', industry: results.indsutry, industry_startups: results.startups})
+        })
     },
-    update_post: (req, res) => {
-        res.send("NOT IMPLEMENTED: Industry Update Post")
-    },
+    update_post: [
+        // Validate that the name field is not empty.
+        body('name', 'Industry name required').isLength({ min: 1 }).trim(),
+        sanitizeBody('name').escape(),
+        (req, res, next) => {
+            // Extract the validation errors from a request.
+            const errors = validationResult(req);
+
+            // Create a industry object with escaped & trimmed data
+            var industry = new Industry(
+                {
+                name: req.body.name,
+                _id: req.params.id //This is required, or a new ID will be assigned.
+                }
+            );
+
+            if(!errors.isEmpty()) {
+                //Error. Render form again with sanitized values/error message
+                res.render('industry_form', { title: 'Create Industry', industry: industry, errors: errors.array()});
+                return;
+            }
+            else {
+                // Data from form is valid
+                Industry.findByIdAndUpdate(industry._id, industry, {}, (err, theIndustry) => {
+                    if(err) {return next(err)}
+                    res.redirect(`/catalog/industry/${industry._id}`)
+                })
+            }
+        }
+
+    ],
 }

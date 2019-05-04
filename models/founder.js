@@ -5,10 +5,11 @@ var Schema = mongoose.Schema;
 var FounderSchema = new Schema ({
     first_name: {type: String, required: true, max: 100},
     family_name: {type: String, required: true, max: 100},
-    linkedin_url: {type: String},
+    linkedin_url: {type: String, max: 100},
+    portfolio_url: {type: String, max: 100},
     startup: [{type: Schema.Types.ObjectId, ref: 'Startup', required: false},],
     personality: {type: String, enum:['INTJ', 'INTP', 'ENTJ', 'ENTP','INFJ', 'INFP', 'ENFJ', 'ENFP', 'ISTF', 'ISFJ', 'ESTJ', 'ESFJ', 'ISTP', 'ISFP', 'ESTP', 'ESFP']},
-
+    
 });
 
 //Virtual for founder's fullname

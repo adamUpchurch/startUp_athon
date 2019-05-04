@@ -42,6 +42,8 @@ module.exports = {
                     .populate('industry')
                     .exec((err, startup)=> {
                         if (err) { return next(err); }
+                        console.log(startup)
+                        console.log('Startup detail')
                         res.render('startup_detail', { title: 'Startup Detail', startup: startup})
                     })
 
@@ -63,11 +65,10 @@ module.exports = {
             }
             )
     },
-    create_post: (req, res) => {
+    create_post: [
         (req, res, next) => {
-            console.log(req.body)
             if(!(req.body.founder instanceof Array)){
-                if(typeof req.body.founder==='undefined')
+                if(typeof req.body.founder === 'undefined')
                     req.body.founder=[];
                 else
                     req.body.founder = new Array(req.body.founder);
@@ -77,12 +78,15 @@ module.exports = {
         // Validate fields
         body('title', 'Title must not be empty').isLength({min: 1}).trim(),
         body('summary', 'Summary must not be empty').isLength({min: 1}).trim(),
+        body('businessplan', 'Business plan must not be empty').isLength({min: 1}).trim(),
 
         //Sanitize
         sanitizeBody('title').escape(),
         sanitizeBody('founder.*').escape(),
         sanitizeBody('summary').escape(),
         sanitizeBody('industry').escape(),
+        sanitizeBody('businessplan').escape(),
+        
         (req, res, next) => {
             const errors = validationResult(req);
 
@@ -93,11 +97,24 @@ module.exports = {
                 summary: req.body.summary,
                 industry: req.body.industry,
                 status: req.body.status,
+                businessplan: req.body.businessplan,
                 founder: req.body.founder,
             });
+            if(!errors.isEmpty()) {
+                //Error. Render form again with sanitized values/error message
+                res.render('startup_form',  { title: 'Create Startup', startup: startup, errors: errors.array()})
+                return;
+            }
+            else {
+                // Data from form is valid
+                console.log(startup)
+                startup.save(err => {
+                    if(err) {return next(err)}
+                    res.redirect(startup.url)
+                })
+            }
         }
-        
-    },
+    ],
     delete_get: (req, res) => {
         async.parallel({
             startup: callback => {
@@ -171,24 +188,29 @@ module.exports = {
         // Validate fields
         body('title', 'Title must not be empty').isLength({min: 1}).trim(),
         body('summary', 'Summary must not be empty').isLength({min: 1}).trim(),
+        body('businessplan', 'Business plan must not be empty').isLength({min: 1}).trim(),
 
         //Sanitize
         sanitizeBody('title').escape(),
         sanitizeBody('founder.*').escape(),
         sanitizeBody('summary').escape(),
         sanitizeBody('industry').escape(),
+        sanitizeBody('businessplan').escape(),
 
         // Process request after validation and sanitization
         (req, res, next) => {
             const errors = validationResult(req);
-
+            console.log('errors: ' + errors)
             //Create a Startup object with escaped/trimmed data and old id
+            console.log('POSTING UPDATE')
+            console.log(req.body)
             var startup = new Startup({
                 title: req.body.title,
                 summary: req.body.summary,
                 industry: req.body.industry,
                 status: req.body.status,
                 founder: req.body.founder,
+                businessplan: req.body.businessplan,
                 _id: req.params.id //This is required, or a new ID will be assigned.
             });
         if (!errors.isEmpty()) {
@@ -204,14 +226,13 @@ module.exports = {
                 },
             }, function(error, results) {
                 if (error) {return next(error)}
-                
                 // Mark selected our founders as checked
                 for (let i = 0; i < results.founders.length; i++) {
                     if (startup.founder.indexOf(results.founders[i]._id) > -1) {
                         results.founders[i].checked='true';
                     }
                 }
-                res.render('startup_form', {title: 'Update Startup', founders: results.founders, industry: results.industry, startup: startup, errors: errors.array() });
+                res.render('startup_form', {title: 'Update Startup', founders: results.founders, industries: results.industry, startup: startup, errors: errors.array() });
             });
             return;
         }
