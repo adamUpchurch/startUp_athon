@@ -1,4 +1,7 @@
 var async = require('async');
+var marked = require('marked');
+const html2pug = require('html2pug')
+
 
 var Founder = require('../models/founder'),
     Startup = require('../models/startup'),
@@ -6,6 +9,21 @@ var Founder = require('../models/founder'),
 
 const { body,validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
+
+marked.setOptions({
+    renderer: new marked.Renderer(),
+    highlight: function(code) {
+      return require('highlight.js').highlightAuto(code).value;
+    },
+    pedantic: true,
+    headerIds: false,
+    tables: true,
+    sanitize: true,
+    smartLists: true,
+    smartypants: false,
+    xhtml: false
+  });
+
 
 module.exports = {
     index: (req, res) => {
@@ -35,20 +53,23 @@ module.exports = {
     },
     detail: (req, res) => {
         let id = req.params.id;
-        async.parallel({
-            startup: function(){
-                Startup.findById(id)
-                    .populate('founder')
-                    .populate('industry')
-                    .exec((err, startup)=> {
-                        if (err) { return next(err); }
-                        console.log(startup)
-                        console.log('Startup detail')
-                        res.render('startup_detail', { title: 'Startup Detail', startup: startup})
-                    })
-
-            }
-        })
+        Startup.findById(id)
+            .populate('founder')
+            .populate('industry')
+            .exec((err, startup)=> {
+                if (err) { return next(err); }
+                console.log('Startup detail')
+                console.log(startup)
+                if(startup.businessplan){
+                    var businessplan = marked(startup.businessplan)
+                    console.log('Business Plan =====')
+                    console.log(businessplan)
+                }
+                else {
+                    var businessplan = 'No Business Plan'
+                }
+                res.render('startup_detail', { title: 'Startup Detail', startup, businessplan})
+            })
     },
     create_get: (req, res, next) => {
         
@@ -86,7 +107,7 @@ module.exports = {
         sanitizeBody('summary').escape(),
         sanitizeBody('industry').escape(),
         sanitizeBody('businessplan').escape(),
-        
+
         (req, res, next) => {
             const errors = validationResult(req);
 
