@@ -5,13 +5,13 @@ var Founder = require('../models/founder'),
 const   { body,validationResult } = require('express-validator/check'),
         { sanitizeBody } = require('express-validator/filter');
 
+
 module.exports = {
     list: (req, res, next) => {
         Founder.find()
             .sort([['family_name', 'ascending']])
             .exec((err, list_founders)=> {
                 if(err) { return next(err)}
-                console.log(list_founders)
                 res.render('founder_list', {title: 'Founders', founder_list: list_founders})
             })
     },

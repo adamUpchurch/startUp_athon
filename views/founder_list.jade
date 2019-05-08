@@ -7,6 +7,6 @@ block content
         each founder in founder_list
             li
                 a(href=founder.url) #{founder.name}
-                |   - founder's strength, personality, number of projects
+                |   - #{founder.description}
         else
             li There are no founders.

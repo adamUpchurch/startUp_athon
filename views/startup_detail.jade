@@ -29,22 +29,15 @@ block content
             p no founders
 
     Summary of the start up. random shit. plan maybe. Idk. Stuffffff.
+    
+    h3 Business Plan
 
-    if startup.businessplan
-        hr
-        div(id="businessplan")
-
-
-    else 
-        p No business plan
+    hr
+    
+    !{businessplan}
+    
     hr
     p
         a(href=startup.url+'/delete') Delete
     p
         a(href=startup.url+'/update') Update
-
-    script(type="text/javascript").
-        console.log('========================')
-        console.log(startup.businessplan)
-        document.getElementById('businessplan').innerHTML =
-            marked('##Hello world!');

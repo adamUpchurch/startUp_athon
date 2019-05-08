@@ -25,6 +25,16 @@ StartupSchema
         return (this.status != 'Ideation' || this.status != 'Validation') 
     })
 
+StartupSchema
+    .virtual('foundersList')
+    .get(function(){
+        var foundersName = []
+        this.founder.forEach(founder => {
+            foundersName.push(`${founder.first_name} ${founder.family_name}`)
+        })
+        return foundersName.join(', ')
+    })
+
 // StartupSchema
 //     .virtual('founderList')
 //     .get( _ => {

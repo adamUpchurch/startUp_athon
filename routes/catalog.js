@@ -5,7 +5,14 @@ var founder     = require('../controllers/founderControllers'),
     startup     = require('../controllers/startupControllers'),
     industry    = require('../controllers/industryControllers');
     
-
+var authCheck = (req, res, next) => {
+    console.log(req.user)
+    if(req.user._id == req.params.id){
+        next()
+    } else {
+        res.redirect('/')
+    }
+}
     //Startup Routes
 router.get('/', startup.index)
 
@@ -25,8 +32,8 @@ router.get('/startups', startup.list)
 router.get('/founder/create', founder.create_get)
 router.post('/founder/create', founder.create_post)
 
-router.get('/founder/:id/delete', founder.delete_get)
-router.post('/founder/:id/delete', founder.delete_post)
+router.get('/founder/:id/delete', authCheck, founder.delete_get)
+router.post('/founder/:id/delete', authCheck, founder.delete_post)
 
 router.get('/founder/:id/update', founder.update_get)
 router.post('/founder/:id/update', founder.update_post)

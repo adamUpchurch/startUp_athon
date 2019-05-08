@@ -6,7 +6,7 @@ block content
     ul
         each startup in startup_list
             li
-                a(href=startup.url) #{startup.title}
-                |   - (populate founders here)
+                a(href=startup.url) #{startup.title} 
+                | - #{startup.foundersList} 
         else
             li There are no startups.
