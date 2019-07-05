@@ -1,11 +1,11 @@
 var passport        = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 var {Passport}      = require('./keys');
-var Founder         = require('../models/founder');
+var User         = require('../models/user');
 
 
 passport.serializeUser((user, done) => done(null, user.id))
-passport.deserializeUser((id, done) => Founder.findById(id).then(founder => done(null, founder)))
+passport.deserializeUser((id, done) => User.findById(id).then(user => done(null, user)))
 
 passport.use(
     new GoogleStrategy({
@@ -14,20 +14,34 @@ passport.use(
         clientSecret: Passport.clientSecret,
         callbackURL: '/auth/google/redirect'
     }, (accessToken, refreshToken, profile, done) => {
+        
         // passport callback function
-        Founder.findOne({googleID: profile.id}).then(currentFounder =>{
-            if(currentFounder) {
-                done(null, currentFounder)
+        var user = new User({
+            username: profile.displayName,
+            googleID: profile.id,
+            first_name: profile.name.givenName,
+            family_name: profile.name.familyName,
+            profile_pic: profile._json.picture,
+            native_language: profile._json.locale,
+        })
+    
+        User.findOne({googleID: profile.id}).then(currentUser =>{
+            debugger
+            console.log(profile)
+            console.log(profile.id)
+            if(currentUser) {
+                done(null, currentUser)
             }
             else {
-                new Founder({
+                new User({
                     username: profile.displayName,
                     googleID: profile.id,
                     first_name: profile.name.givenName,
                     family_name: profile.name.familyName,
                     profile_pic: profile._json.picture,
-                }).save().then( newFounder => done(null, newFounder))
+                    native_language: profile._json.locale,
+                }).save().then( newUser => done(null, newUser))
             }
         })
     })
-);
+)

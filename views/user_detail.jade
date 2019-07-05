@@ -1,0 +1,29 @@
+extends layout
+
+block content
+
+    h1 #{user.name}
+
+    div(style='margin-left: 20px; margin-top:20px')
+
+    //- if user.personality
+    //-     h5 #{user.personality}
+    //- else
+    //-     h5 to be personality
+
+    h5 Summary - Progress - Interests
+    h5 Books Reading:
+    //- To be list of books currently reading
+    //- ul
+    //-     each startup in startups
+    //-         li
+    //-             a(href=startup.url) #{startup.title}
+    //-     else
+    //-         p not reading any books, yet!
+
+    hr
+    p
+        a(href=user.url+'/update') Update
+    p
+        a(href=user.url+'/delete') Delete
+    

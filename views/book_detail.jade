@@ -1,0 +1,26 @@
+extends layout
+
+block scripts
+    script(src="https://cdn.jsdelivr.net/npm/marked/marked.min.js")
+
+block content
+
+    h1 #{book.title}
+    h3 #{book.author}
+
+    div(style='margin-left: 20px; margin-top:20px')
+
+    h4 Summary:
+    p #{book.summary}
+    
+    h4 Story:
+
+    hr
+    
+    !{book.story.en}
+
+    hr
+    p
+        a(href=book.url+'/delete') Delete
+    p
+        a(href=book.url+'/update') Update

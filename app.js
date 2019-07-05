@@ -4,13 +4,13 @@ var path            = require('path');
 var cookieParser    = require('cookie-parser');
 var logger          = require('morgan');
 const cookieSession = require('cookie-session');
-const passport = require('passport');
+const passport      = require('passport');
 
 
 var indexRouter     = require('./routes/index');
-var usersRouter     = require('./routes/users');
-var startupRouter   = require('./routes/catalog');
+var catalogRouter   = require('./routes/catalog');
 var authRouter      = require('./routes/auth');
+
 var {MongoDB, session}       = require('./config/keys');
 var passportSetup   = require('./config/passport');
 
@@ -29,7 +29,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(logger('dev'));
-app.use(express.json());
+app.use(express.json({limit: "100mb", parameterLimit: 100000000}));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -46,8 +46,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/catalog', startupRouter);
+app.use('/catalog', catalogRouter);
 app.use('/auth', authRouter);
 
 // catch 404 and forward to error handler

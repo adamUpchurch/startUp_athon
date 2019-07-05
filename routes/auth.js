@@ -2,14 +2,9 @@ var express     = require('express'),
     router      = express.Router(),
     passport    = require('passport');
 
-
-
-router.get('/login', (req, res) => {
-    res.send('login')
-})
-
 router.get('/logout', (req, res) => {
-    res.send('logout')
+    req.logout();
+    res.redirect('/');
 })
 
 // auth with google+

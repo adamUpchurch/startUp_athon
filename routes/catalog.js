@@ -1,57 +1,43 @@
 var express     = require('express'),   
     router      = express.Router();
 
-var founder     = require('../controllers/founderControllers'),
-    startup     = require('../controllers/startupControllers'),
-    industry    = require('../controllers/industryControllers');
+var user     = require('../controllers/userController'),
+    book     = require('../controllers/bookController');
     
 var authCheck = (req, res, next) => {
     console.log(req.user)
-    if(req.user._id == req.params.id){
+    if(req.user._id == req.params.id || req.user._id == '5cd344fdcf6e8085e28e94fd'){
         next()
     } else {
         res.redirect('/')
     }
 }
     //Startup Routes
-router.get('/', startup.index)
+router.get('/', book.index)
 
-router.get('/startup/create', startup.create_get)
-router.post('/startup/create', startup.create_post)
+router.get('/book/create', book.create_get)
+router.post('/book/create', book.create_post)
 
-router.get('/startup/:id/delete', startup.delete_get)
-router.post('/startup/:id/delete', startup.delete_post)
+router.get('/book/:id/delete', book.delete_get)
+router.post('/book/:id/delete', book.delete_post)
 
-router.get('/startup/:id/update', startup.update_get)
-router.post('/startup/:id/update', startup.update_post)
+router.get('/book/:id/update', book.update_get)
+router.post('/book/:id/update', book.update_post)
 
-router.get('/startup/:id', startup.detail)
-router.get('/startups', startup.list)
+router.get('/book/:id', book.detail)
+router.get('/books', book.list)
 
-    //Founder Routes
-router.get('/founder/create', founder.create_get)
-router.post('/founder/create', founder.create_post)
+    //User Routes
+router.get('/user/create', user.create_get)
+router.post('/user/create', user.create_post)
 
-router.get('/founder/:id/delete', authCheck, founder.delete_get)
-router.post('/founder/:id/delete', authCheck, founder.delete_post)
+router.get('/user/:id/delete', authCheck, user.delete_get)
+router.post('/user/:id/delete', authCheck, user.delete_post)
 
-router.get('/founder/:id/update', founder.update_get)
-router.post('/founder/:id/update', founder.update_post)
+router.get('/user/:id/update', authCheck, user.update_get)
+router.post('/user/:id/update', authCheck, user.update_post)
 
-router.get('/founder/:id', founder.detail)
-router.get('/founders', founder.list)
-
-    //Industry Routes
-router.get('/industry/create', industry.create_get)
-router.post('/industry/create', industry.create_post)
-
-router.get('/industry/:id/delete', industry.delete_get)
-router.post('/industry/:id/delete', industry.delete_post)
-
-router.get('/industry/:id/update', industry.update_get)
-router.post('/industry/:id/update', industry.update_post)
-
-router.get('/industry/:id', industry.detail)
-router.get('/industries', industry.list)
+router.get('/user/:id', user.detail)
+router.get('/users', user.list)
 
 module.exports = router;

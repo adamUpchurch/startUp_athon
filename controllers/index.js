@@ -1,5 +1,5 @@
 var async = require('async')
 
-var founder = require('../models/founder'),
+var author = require('../models/author'),
     startup = require('../models/startup'),
-    industry = require('../models/industry');
+    genre = require('../models/genre');

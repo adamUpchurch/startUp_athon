@@ -10,6 +10,7 @@ html {
 	font: normal 16px sans-serif;
 	color:white;
 	background-color: #1b1b2b;
+	
 }
 
 ul,
@@ -115,6 +116,8 @@ header {
 	animation: 1s fadein 0.5s forwards;
 	opacity: 0;
 	color: #fff;
+	z-index: 1;
+
 }
 
 @keyframes fadein {
@@ -155,6 +158,8 @@ header nav li {
 	text-align: center;
 	min-height: 100vh;
 	color: #fff;
+	font-family: 'Changa', sans-serif;
+
 }
 
 .hero .background-image {
@@ -238,8 +243,24 @@ header nav li {
 }
 
 .packages .grid li h4 {
-	font-size: 30px;
-	margin: 25px 0;
+	font-size: 40px;
+	margin: 30px 0;
+}
+
+.packages p {
+	font-size: 25px;
+}
+
+.packages .title {
+	font-size: 60px;
+}
+
+.packages .grid li p {
+	font-size: 20px;
+}
+
+.contact p {
+	font-size: 20px;
 }
 
 @media (max-width: 1200px) {

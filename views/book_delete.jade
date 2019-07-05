@@ -9,10 +9,10 @@ block content
     h6 website url or github link
     p Industry: #{startup.industry.name}
     ul
-        each founder in startup.founder
-            li=founder.name
+        each user in startup.user
+            li=user.name
         else
-            p no founders
+            p no users
     p Do you really want to delete this startup?
 
     form(method='POST' action='')
